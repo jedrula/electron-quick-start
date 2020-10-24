@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build": "node build",
+    "deploy": "npm run build && surge . --domain electron-audio.surge.sh"
+  }
+}

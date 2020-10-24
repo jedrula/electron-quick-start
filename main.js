@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-const path = require('path')
+const path = require('path');
+const express = require('express');
 
 function createWindow () {
   // Create the browser window.
@@ -8,7 +9,8 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
     }
   })
 
@@ -16,15 +18,30 @@ function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools();
+
+  return mainWindow;
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
-  
+  const mainWindow = createWindow();
+  const app = express();
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+  const port = 4000
+
+  app.post('/audio/:radioName/:action', (req, res) => {
+    mainWindow.webContents.send('audio/:radioName/:action', { params: req.params });
+    res.sendStatus(200);
+  });
+  app.listen(port, '0.0.0.0', () => console.log(`Example app listening at http://localhost:${port}`))
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

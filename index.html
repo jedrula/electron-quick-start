@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <!-- TODO is it safe ? -->
+<!--     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
     <title>Hello World!</title>
   </head>
   <body>
@@ -12,8 +13,22 @@
     We are using Node.js <span id="node-version"></span>,
     Chromium <span id="chrome-version"></span>,
     and Electron <span id="electron-version"></span>.
+    <button
+      onclick="postRequest('http://localhost:4000/audio/nowy-swiat/play')"
+    >
+      Nowy Swiat
+    </button>
+    <button
+      onclick="postRequest('http://localhost:4000/audio/nowy-swiat/pause')"
+    >
+      Pause
+    </button>
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
+
+    <script type="text/javascript">
+
+    </script>
   </body>
 </html>
