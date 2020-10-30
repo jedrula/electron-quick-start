@@ -13,6 +13,9 @@ In the future 2 index.html files will likely by unified into one. This might req
 
 # deployment with "remote mode"
 - ssh into pi or connect using keyboard
+- git fetch
+- git checkout audio-out
+- git pull
 - npm run deploy
 - go to electron-audio.surge.sh on a device connected to the same wifi as your PI
 
