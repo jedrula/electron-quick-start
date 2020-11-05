@@ -8,7 +8,11 @@ const { ipcRenderer } = require('electron')
 
 console.log('asdasd');
 ipcRenderer.on("audio/:radioName/:action", (event, req) => {
-  radios.findRadio(req.params.radioName)[req.params.action]();
+  radios.findRadio(req.params.radioName).post[req.params.action](req.body);
+});
+ipcRenderer.on("audio/:radioName/:property", (event, req) => {
+  const value = radios.findRadio(req.params.radioName).get[req.params.property];
+  ipcRenderer.send('renderer-callback', { getRequestIndex: req.getRequestIndex, value });
 });
 
 const radios = {
@@ -20,15 +24,25 @@ const radios = {
 
 function createRadio(radioName, url) {
   const audio = new Audio(url);
+  audio.volume = 0.5;
   return {
     name: radioName,
-    play() {
-      if (audio.playing) {
-        return false;
+    post: {
+      play() {
+        if (audio.playing) {
+          return false;
+        }
+        audio.play();
+      },
+      pause: () => audio.pause(),
+      volume({ value }){
+        audio.volume = value;
+        console.log('changed audio, now change ui');
       }
-      audio.play();
     },
-    pause: () => audio.pause(),
+    get: {
+      volume: audio.volume,
+    }
   }
 }
 
@@ -38,9 +52,20 @@ function registerRadio(radioName, url) {
 
 registerRadio('nowy-swiat', 'https://n11a-eu.rcs.revma.com/ypqt40u0x1zuv?rj-ttl=5&rj-tok=AAABc5-yp48AZYu5xqZHYSS6ig');
 
-async function postRequest(url) {
+async function postRequest(url, data = {}) {
   const response = await fetch(url, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  });
+  return response.json();
+}
+
+async function getRequest(url) {
+  const response = await fetch(url, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },

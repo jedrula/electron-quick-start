@@ -24,11 +24,19 @@
     >
       Pause
     </button>
+    <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
 
     <script type="text/javascript">
+      function sendVolume(value) {
+        postRequest('http://localhost:4000/audio/nowy-swiat/volume', { value: parseFloat(value) })
+      }
+      async function setInitialVolume() {
+        document.querySelector('#volume').value = (await getRequest('http://localhost:4000/audio/nowy-swiat/volume')).value;
+      }
+      setInitialVolume();
 
     </script>
   </body>
