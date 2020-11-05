@@ -41,7 +41,7 @@ async function getRequest(url) {
 }
 
 function sendVolume(value) {
-  postRequest('nowy-swiat/volume', { value: parseFloat(value) })
+  postRequest('audio/nowy-swiat/volume', { value: parseFloat(value) })
 }
 async function setInitialVolume() {
   document.querySelector('#volume').value = (await getRequest('audio/nowy-swiat/volume')).value;
