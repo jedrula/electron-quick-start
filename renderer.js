@@ -41,7 +41,7 @@ function createRadio(radioName, url) {
       }
     },
     get: {
-      volume: audio.volume,
+      get volume(){ return audio.volume }
     }
   }
 }
