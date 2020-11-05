@@ -16,15 +16,35 @@
   >
     Pause
   </button>
+  <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
 </html>
 <script>
-async function postRequest(url) {
+async function postRequest(url, data = {}) {
   const response = await fetch(`http://${window.localIp}:4000/${url}`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  });
+  return response.json();
+}
+
+async function getRequest(url) {
+  const response = await fetch(`http://${window.localIp}:4000/${url}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
   return response.json();
 }
+
+function sendVolume(value) {
+  postRequest('nowy-swiat/volume', { value: parseFloat(value) })
+}
+async function setInitialVolume() {
+  document.querySelector('#volume').value = (await getRequest('audio/nowy-swiat/volume')).value;
+}
+setInitialVolume();
 </script>
