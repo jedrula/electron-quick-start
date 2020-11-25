@@ -33,12 +33,31 @@ function createWindow () {
 let getRequestIndex = 0;
 const getResponseRegistry = {};
 
+let postRequestIndex = 0;
+const postResponseRegistry = {};
+
 // used for responding to GET requests.
 ipcMain.on('renderer-callback', (event, arg) => {
   const res = getResponseRegistry[arg.getRequestIndex];
   res.json({ value: arg.value });
   delete getResponseRegistry[arg.getRequestIndex];
 });
+
+
+ipcMain.on('post-renderer-callback', (event, arg) => {
+  const res = postResponseRegistry[arg.postRequestIndex];
+  res.json(arg.response);
+  delete postResponseRegistry[arg.getRequestIndex];
+});
+
+ipcMain.on('post-renderer-callback-error', (event, arg) => {
+  const res = postResponseRegistry[arg.postRequestIndex];
+  res.status(500).json({ error: arg.error });
+  delete postResponseRegistry[arg.getRequestIndex];
+});
+
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -51,10 +70,11 @@ electronApp.whenReady().then(() => {
   next();
 });
   const port = 4000
-
+  app.post('/refresh', (req, res) => mainWindow.webContents.send('refresh'));
   app.post('/audio/:radioName/:action', (req, res) => {
-    mainWindow.webContents.send('audio/:radioName/:action', { params: req.params, body: req.body });
-    res.sendStatus(200);
+    postRequestIndex++;
+    mainWindow.webContents.send('audio/:radioName/:action', { params: req.params, postRequestIndex, body: req.body });
+    postResponseRegistry[postRequestIndex] = res;
   });
   app.get('/audio/:radioName/:property', (req, res) => {
     getRequestIndex++;
@@ -65,11 +85,11 @@ electronApp.whenReady().then(() => {
 
   app.listen(port, '0.0.0.0', () => console.log(`Example app listening at http://localhost:${port}`))
 
-  electronApp.on('activate', function () {
+  // electronApp.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+    // if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  // })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -6,9 +6,15 @@
 // process.
 const { ipcRenderer } = require('electron')
 
-console.log('asdasd');
-ipcRenderer.on("audio/:radioName/:action", (event, req) => {
-  radios.findRadio(req.params.radioName).post[req.params.action](req.body);
+ipcRenderer.on("refresh", () => window.location.reload());
+ipcRenderer.on("audio/:radioName/:action", async(event, req) => {
+  try {
+    const response = await radios.findRadio(req.params.radioName).post[req.params.action](req.body);
+    ipcRenderer.send('post-renderer-callback', { postRequestIndex: req.postRequestIndex, response });
+  }
+  catch (error) {
+    ipcRenderer.send('post-renderer-callback-error', { postRequestIndex: req.postRequestIndex, error });
+  }
 });
 ipcRenderer.on("audio/:radioName/:property", (event, req) => {
   const value = radios.findRadio(req.params.radioName).get[req.params.property];
@@ -26,18 +32,23 @@ function createRadio(radioName, url) {
   const audio = new Audio(url);
   audio.volume = 0.5;
   return {
+    _audio: audio, // for debugging
     name: radioName,
     post: {
-      play() {
+      async play() {
         if (audio.playing) {
           return false;
         }
-        audio.play();
+        return audio.play();
       },
-      pause: () => audio.pause(),
+      pause: () => {
+        audio.pause();
+        return {};
+      },
       volume({ value }){
         audio.volume = value;
         console.log('changed audio, now change ui');
+        return { value };
       }
     },
     get: {

@@ -6,17 +6,25 @@
     }
   </style>
   <script src="./global.js"></script>
+  <div>
+    <button
+      onclick="postRequest('audio/nowy-swiat/play')"
+    >
+      Nowy Swiat
+    </button>
+    <button
+      onclick="postRequest('audio/nowy-swiat/pause')"
+    >
+      Pause
+    </button>
+    <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
+  </div>
   <button
-    onclick="postRequest('audio/nowy-swiat/play')"
+    style="margin-top: 20px"
+    onclick="postRequest('refresh')"
   >
-    Nowy Swiat
+    Refresh
   </button>
-  <button
-    onclick="postRequest('audio/nowy-swiat/pause')"
-  >
-    Pause
-  </button>
-  <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
 </html>
 <script>
 async function postRequest(url, data = {}) {
