@@ -10,6 +10,7 @@
   </head>
   <!-- https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements -->
   <body>
+
     <div>
       <button
         onclick="postRequest('http://localhost:4000/audio/nowy-swiat/play')"
@@ -21,8 +22,23 @@
       >
         Pause
       </button>
-      <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
+      <input type="range" min="0" max="1" value="1" step="any" id="volume-nowy-swiat" onchange="sendVolume(this.value, 'nowy-swiat')">
     </div>
+
+    <div>
+      <button
+        onclick="postRequest('http://localhost:4000/audio/antyradio/play')"
+      >
+        Antyradio
+      </button>
+      <button
+        onclick="postRequest('http://localhost:4000/audio/antyradio/pause')"
+      >
+        Pause
+      </button>
+      <input type="range" min="0" max="1" value="1" step="any" id="volume-antyradio" onchange="sendVolume(this.value, 'antyradio')">
+    </div>
+
     <button
       style="margin-top: 20px"
       onclick="postRequest('http://localhost:4000/refresh')"
@@ -34,11 +50,12 @@
     <script src="./renderer.js"></script>
 
     <script type="text/javascript">
-      function sendVolume(value) {
-        postRequest('http://localhost:4000/audio/nowy-swiat/volume', { value: parseFloat(value) })
+      function sendVolume(value, radio) {
+        postRequest(`http://localhost:4000/audio/${radio}/volume`, { value: parseFloat(value) })
       }
       async function setInitialVolume() {
-        document.querySelector('#volume').value = (await getRequest('http://localhost:4000/audio/nowy-swiat/volume')).value;
+        document.querySelector('#volume-nowy-swiat').value = (await getRequest('http://localhost:4000/audio/nowy-swiat/volume')).value;
+        document.querySelector('#volume-antyradio').value = (await getRequest('http://localhost:4000/audio/antyradio/volume')).value;
       }
       setInitialVolume();
 
