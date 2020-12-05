@@ -4,9 +4,13 @@
       width: 50em;
       height: 5em;
     }
+
+    .radio-container + .radio-container {
+      margin-top: 2em;
+    }
   </style>
   <script src="./global.js"></script>
-  <div>
+  <div class="radio-container">
     <button
       onclick="postRequest('audio/nowy-swiat/play')"
     >
@@ -17,7 +21,21 @@
     >
       Pause
     </button>
-    <input type="range" min="0" max="1" value="1" step="any" id="volume" onchange="sendVolume(this.value)">
+    <input type="range" min="0" max="1" value="1" step="any" id="volume-nowy-swiat" onchange="sendVolume(this.value, 'nowy-swiat')">
+  </div>
+
+  <div class="radio-container">
+    <button
+      onclick="postRequest('audio/antyradio/play')"
+    >
+      Antyradio
+    </button>
+    <button
+      onclick="postRequest('audio/antyradio/pause')"
+    >
+      Pause
+    </button>
+    <input type="range" min="0" max="1" value="1" step="any" id="volume-antyradio" onchange="sendVolume(this.value, 'antyradio')">
   </div>
   <!-- TODO refresh remote when raspberry electron refreshes -->
   <button
@@ -49,11 +67,11 @@ async function getRequest(url) {
   return response.json();
 }
 
-function sendVolume(value) {
-  postRequest('audio/nowy-swiat/volume', { value: parseFloat(value) })
+function sendVolume(value, radio) {
+  postRequest(`audio/${radio}/volume`, { value: parseFloat(value) })
 }
 async function setInitialVolume() {
-  document.querySelector('#volume').value = (await getRequest('audio/nowy-swiat/volume')).value;
+  document.querySelector('#volume-nowy-swiat').value = (await getRequest('audio/nowy-swiat/volume')).value;
 }
 setInitialVolume();
 </script>

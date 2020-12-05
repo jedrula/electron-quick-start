@@ -7,11 +7,22 @@
 <!--     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
     <title>Electron Audio</title>
+
+    <style>
+      button {
+        width: 50em;
+        height: 5em;
+      }
+
+      .radio-container + .radio-container {
+        margin-top: 2em;
+      }
+    </style>
   </head>
   <!-- https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements -->
   <body>
 
-    <div>
+    <div class="radio-container">
       <button
         onclick="postRequest('http://localhost:4000/audio/nowy-swiat/play')"
       >
@@ -25,7 +36,7 @@
       <input type="range" min="0" max="1" value="1" step="any" id="volume-nowy-swiat" onchange="sendVolume(this.value, 'nowy-swiat')">
     </div>
 
-    <div>
+    <div class="radio-container">
       <button
         onclick="postRequest('http://localhost:4000/audio/antyradio/play')"
       >
