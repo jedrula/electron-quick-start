@@ -54,6 +54,20 @@
       <input type="range" min="0" max="1" value="1" step="any" id="volume-antyradio" onchange="sendVolume(this.value, 'antyradio')">
     </div>
 
+    <div class="radio-container">
+      <button
+        onclick="postRequest('http://localhost:4000/audio/ram/play')"
+      >
+        Ram
+      </button>
+      <button
+        onclick="postRequest('http://localhost:4000/audio/ram/pause')"
+      >
+        Pause
+      </button>
+      <input type="range" min="0" max="1" value="1" step="any" id="volume-ram" onchange="sendVolume(this.value, 'ram')">
+    </div>
+
     <button
       style="margin-top: 20px"
       onclick="postRequest('http://localhost:4000/refresh')"
@@ -71,6 +85,7 @@
       async function setInitialVolume() {
         document.querySelector('#volume-nowy-swiat').value = (await getRequest('http://localhost:4000/audio/nowy-swiat/volume')).value;
         document.querySelector('#volume-antyradio').value = (await getRequest('http://localhost:4000/audio/antyradio/volume')).value;
+        document.querySelector('#volume-ram').value = (await getRequest('http://localhost:4000/audio/ram/volume')).value;
       }
       setInitialVolume();
 

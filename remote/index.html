@@ -30,6 +30,20 @@
 
   <div class="radio-container">
     <button
+      onclick="postRequest('audio/ram/play')"
+    >
+      Ram
+    </button>
+    <button
+      onclick="postRequest('audio/ram/pause')"
+    >
+      Pause
+    </button>
+    <input type="range" min="0" max="1" value="1" step="any" id="volume-ram" onchange="sendVolume(this.value, 'ram')">
+  </div>
+
+  <div class="radio-container">
+    <button
       onclick="postRequest('audio/antyradio/play')"
     >
       Antyradio
@@ -76,6 +90,8 @@ function sendVolume(value, radio) {
 }
 async function setInitialVolume() {
   document.querySelector('#volume-nowy-swiat').value = (await getRequest('audio/nowy-swiat/volume')).value;
+  document.querySelector('#volume-antyradio').value = (await getRequest('audio/antyradio/volume')).value;
+  document.querySelector('#volume-ram').value = (await getRequest('audio/ram/volume')).value;
 }
 setInitialVolume();
 </script>

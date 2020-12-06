@@ -63,6 +63,7 @@ function registerRadio(radioName, url) {
 
 registerRadio('nowy-swiat', 'https://n11a-eu.rcs.revma.com/ypqt40u0x1zuv?rj-ttl=5&rj-tok=AAABc5-yp48AZYu5xqZHYSS6ig');
 registerRadio('antyradio', 'https://n-22-12.dcs.redcdn.pl/sc/o2/Eurozet/live/antyradio.livx?audio=5?t=1607202133891');
+registerRadio('ram', 'https://stream4.nadaje.com:9221/ram');
 
 async function postRequest(url, data = {}) {
   const response = await fetch(url, {
